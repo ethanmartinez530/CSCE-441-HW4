@@ -34,6 +34,7 @@ struct materialStruct {
 	glm::vec3 ka, kd, ks;
 	float s;
 } materials[NUM_MATERIALS];
+int selectMat = 0;
 
 struct lightStruct {
 	glm::vec3 position;
@@ -58,10 +59,10 @@ void Display()
 	program.SendUniformData(projectionMatrix, "projection");
 
 	// Send material and light data
-	program.SendUniformData(materials[0].ka, "ka");
-	program.SendUniformData(materials[0].kd, "kd");
-	program.SendUniformData(materials[0].ks, "ks");
-	program.SendUniformData(materials[0].s, "s");
+	program.SendUniformData(materials[selectMat].ka, "ka");
+	program.SendUniformData(materials[selectMat].kd, "kd");
+	program.SendUniformData(materials[selectMat].ks, "ks");
+	program.SendUniformData(materials[selectMat].s, "s");
 	program.SendUniformData(lights[0].position, "lights[0].position");
 	program.SendUniformData(lights[0].color, "lights[0].color");
 	program.SendUniformData(lights[1].position, "lights[1].position");
@@ -79,6 +80,16 @@ void CharacterCallback(GLFWwindow* lWindow, unsigned int key)
 	{
 	case 'q':
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
+		break;
+	
+	//Change material
+	case 'm':
+		selectMat++;
+		if (selectMat > NUM_MATERIALS - 1) { selectMat = 0; }
+		break;
+	case 'M':
+		selectMat--;
+		if (selectMat < 0) { selectMat = NUM_MATERIALS - 1; }
 		break;
 	default:
 		break;
@@ -146,6 +157,14 @@ void Init()
 	materials[0].kd = glm::vec3{ 0.8, 0.7, 0.7 };
 	materials[0].ks = glm::vec3{ 1.0, 1.0, 1.0 };
 	materials[0].s = 10.0;
+	materials[1].ka = glm::vec3{ 0.0, 0.2, 0.2 };
+	materials[1].kd = glm::vec3{ 0.5, 0.7, 0.2 };
+	materials[1].ks = glm::vec3{ 0.1, 1.0, 0.1 };
+	materials[1].s = 100.0;
+	materials[2].ka = glm::vec3{ 0.2, 0.2, 0.2 };
+	materials[2].kd = glm::vec3{ 0.1, 0.3, 0.9 };
+	materials[2].ks = glm::vec3{ 0.1, 0.1, 0.1 };
+	materials[2].s = 1.0;
 
 	lights[0].position = glm::vec3{ 0.0, 0.0, 3.0 };
 	lights[0].color = glm::vec3{ 0.5, 0.5, 0.5 };
