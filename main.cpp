@@ -56,6 +56,17 @@ void Display()
 	program.SendUniformData(modelMatrix, "model");
 	program.SendUniformData(viewMatrix, "view");
 	program.SendUniformData(projectionMatrix, "projection");
+
+	// Send material and light data
+	program.SendUniformData(materials[0].ka, "ka");
+	program.SendUniformData(materials[0].kd, "kd");
+	program.SendUniformData(materials[0].ks, "ks");
+	program.SendUniformData(materials[0].s, "s");
+	program.SendUniformData(lights[0].position, "lights[0].position");
+	program.SendUniformData(lights[0].color, "lights[0].color");
+	program.SendUniformData(lights[1].position, "lights[1].position");
+	program.SendUniformData(lights[1].color, "lights[1].color");
+
 	glDrawArrays(GL_TRIANGLES, 0, posBuff.size() / 3);
 	program.Unbind();
 
@@ -130,6 +141,17 @@ void LoadModel(char* name)
 
 void Init()
 {
+	// Set material and light data
+	materials[0].ka = glm::vec3{ 0.2, 0.2, 0.2 };
+	materials[0].kd = glm::vec3{ 0.8, 0.7, 0.7 };
+	materials[0].ks = glm::vec3{ 1.0, 1.0, 1.0 };
+	materials[0].s = 10.0;
+
+	lights[0].position = glm::vec3{ 0.0, 0.0, 3.0 };
+	lights[0].color = glm::vec3{ 0.5, 0.5, 0.5 };
+	lights[1].position = glm::vec3{ 0.0, 3.0, 0.0 };
+	lights[1].color = glm::vec3{ 0.2, 0.2, 0.2 };
+	
 	glfwInit();
 	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Assignment4 - <Your Name>", NULL, NULL);
 	glfwMakeContextCurrent(window);
