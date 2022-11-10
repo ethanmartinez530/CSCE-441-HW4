@@ -23,7 +23,8 @@
 
 GLFWwindow *window;
 
-Program program;
+Program program[3];
+int selectProg = 0;
 std::vector<float> posBuff;
 std::vector<float> norBuff;
 std::vector<float> texBuff;
@@ -53,23 +54,23 @@ void Display()
 	glm::mat4 modelMatrix(1.0f);
 	modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.2f, -1.0f, 0.0f)) * glm::rotate(glm::mat4(1.0f), glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	program.Bind();
-	program.SendUniformData(modelMatrix, "model");
-	program.SendUniformData(viewMatrix, "view");
-	program.SendUniformData(projectionMatrix, "projection");
+	program[selectProg].Bind();
+	program[selectProg].SendUniformData(modelMatrix, "model");
+	program[selectProg].SendUniformData(viewMatrix, "view");
+	program[selectProg].SendUniformData(projectionMatrix, "projection");
 
 	// Send material and light data
-	program.SendUniformData(materials[selectMat].ka, "ka");
-	program.SendUniformData(materials[selectMat].kd, "kd");
-	program.SendUniformData(materials[selectMat].ks, "ks");
-	program.SendUniformData(materials[selectMat].s, "s");
-	program.SendUniformData(lights[0].position, "lights[0].position");
-	program.SendUniformData(lights[0].color, "lights[0].color");
-	program.SendUniformData(lights[1].position, "lights[1].position");
-	program.SendUniformData(lights[1].color, "lights[1].color");
+	program[selectProg].SendUniformData(materials[selectMat].ka, "ka");
+	program[selectProg].SendUniformData(materials[selectMat].kd, "kd");
+	program[selectProg].SendUniformData(materials[selectMat].ks, "ks");
+	program[selectProg].SendUniformData(materials[selectMat].s, "s");
+	program[selectProg].SendUniformData(lights[0].position, "lights[0].position");
+	program[selectProg].SendUniformData(lights[0].color, "lights[0].color");
+	program[selectProg].SendUniformData(lights[1].position, "lights[1].position");
+	program[selectProg].SendUniformData(lights[1].color, "lights[1].color");
 
 	glDrawArrays(GL_TRIANGLES, 0, posBuff.size() / 3);
-	program.Unbind();
+	program[selectProg].Unbind();
 
 }
 
@@ -91,6 +92,18 @@ void CharacterCallback(GLFWwindow* lWindow, unsigned int key)
 		selectMat--;
 		if (selectMat < 0) { selectMat = NUM_MATERIALS - 1; }
 		break;
+
+	// Select between Gouraud, Phong, and Silhouette shading
+	case '1':
+		selectProg = 0;
+		break;
+	case '2':
+		selectProg = 1;
+		break;
+	case '3':
+		selectProg = 2;
+		break;
+
 	default:
 		break;
 	}
@@ -184,10 +197,20 @@ void Init()
 
 	LoadModel("../obj/bunny.obj");
 	
-	program.SetShadersFileName("../shaders/shader.vert", "../shaders/shader.frag");
-	program.Init();
-	program.SendAttributeData(posBuff, "vPositionModel");
-	program.SendAttributeData(norBuff, "vNormalModel");
+	program[0].SetShadersFileName("../shaders/shader1.vert", "../shaders/shader1.frag");
+	program[0].Init();
+	program[0].SendAttributeData(posBuff, "vPositionModel");
+	program[0].SendAttributeData(norBuff, "vNormalModel");
+
+	program[1].SetShadersFileName("../shaders/shader2.vert", "../shaders/shader2.frag");
+	program[1].Init();
+	program[1].SendAttributeData(posBuff, "vPositionModel");
+	program[1].SendAttributeData(norBuff, "vNormalModel");
+
+	program[2].SetShadersFileName("../shaders/shader3.vert", "../shaders/shader3.frag");
+	program[2].Init();
+	program[2].SendAttributeData(posBuff, "vPositionModel");
+	program[2].SendAttributeData(norBuff, "vNormalModel");
 }
 
 
