@@ -153,7 +153,7 @@ void Init()
 	lights[1].color = glm::vec3{ 0.2, 0.2, 0.2 };
 	
 	glfwInit();
-	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Assignment4 - <Your Name>", NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Assignment4 - Ethan Martinez", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	glewExperimental = GL_TRUE;
 	glewInit();
