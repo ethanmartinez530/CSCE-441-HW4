@@ -1,4 +1,5 @@
 #version 120
+// Phong shading - color calculation is done in frag file
 
 attribute vec3 vPositionModel; // in object space
 attribute vec3 vNormalModel; // in object space
