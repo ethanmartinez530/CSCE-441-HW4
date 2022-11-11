@@ -3,9 +3,13 @@
 attribute vec3 vPositionModel; // in object space
 attribute vec3 vNormalModel; // in object space
 
+vec4 vPositionWorld; // in world space
+vec4 vNormalWorld; // in world space
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 modelInvTrans;
 
 struct lightStruct
 {
@@ -26,18 +30,20 @@ varying vec3 color;
 
 void main()
 {
+	vPositionWorld = model * vec4(vPositionModel, 1.0);
+	vPositionWorld /= vPositionWorld.w;
+	vNormalWorld = model * vec4(vNormalModel, 1.0);	// replace model with modelInvTrans once I get it working
+	vNormalWorld /= vNormalWorld.w;
 	gl_Position = projection * view * model * vec4(vPositionModel, 1.0);
 	
-	vec3 L, R, Lp, Lo;
-	vec3 N = vec3(model * vec4(vNormalModel, 1.0));
-	vec3 E = normalize(vec3(model * vec4(vPositionModel, 1.0)) - vec3(view[3][0], view[3][1], view[3][2]));
-	vec3 I = ka;
+	vec3 L, R;
+	vec3 N = vec3(vNormalWorld);
+	vec3 E = normalize(vec3(vPositionWorld) - vec3(view[3][0], view[3][1], view[3][2]));
+	color = ka;
 	
 	for (int i = 0; i < NUM_LIGHTS; i++) {
-		L = normalize(lights[i].position - vec3(model * vec4(vPositionModel, 1.0)));
+		L = normalize(lights[i].position - vec3(vPositionWorld));
 		R = 2 * N * dot(L, N) - L;
-		I += lights[i].color * (kd * max(0, dot(L, N)) + ks * pow(max(0, dot(R, E)), s));
+		color += lights[i].color * (kd * max(0, dot(L, N)) + ks * pow(max(0, dot(R, E)), s));
 	}
-	color = I;
-	//color = vec3(1.0f, 0.0f, 0.0f);
 }
