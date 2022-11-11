@@ -41,7 +41,7 @@ struct lightStruct {
 	glm::vec3 position;
 	glm::vec3 color;
 } lights[NUM_LIGHTS];
-
+bool selectLight = 0;
 
 void Display()
 {		
@@ -93,6 +93,32 @@ void CharacterCallback(GLFWwindow* lWindow, unsigned int key)
 	case 'M':
 		selectMat--;
 		if (selectMat < 0) { selectMat = NUM_MATERIALS - 1; }
+		break;
+	
+	// Change light position
+	case 'l':
+		selectLight = !selectLight;
+		break;
+	case 'L':
+		selectLight = !selectLight;
+		break;
+	case 'x':
+		lights[selectLight].position.x++;
+		break;
+	case 'X':
+		lights[selectLight].position.x--;
+		break;
+	case 'y':
+		lights[selectLight].position.y++;
+		break;
+	case 'Y':
+		lights[selectLight].position.y--;
+		break;
+	case 'z':
+		lights[selectLight].position.z++;
+		break;
+	case 'Z':
+		lights[selectLight].position.z--;
 		break;
 
 	// Select between Gouraud, Phong, and Silhouette shading
