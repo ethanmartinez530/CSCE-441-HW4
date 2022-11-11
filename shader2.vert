@@ -3,6 +3,7 @@
 attribute vec3 vPositionModel; // in object space
 attribute vec3 vNormalModel; // in object space
 
+// Varying so they can be sent to shader2.frag
 varying vec4 vPositionWorld; // in world space
 varying vec4 vNormalWorld; // in world space
 
@@ -36,6 +37,7 @@ void main()
 	vNormalWorld = model * vec4(vNormalModel, 1.0);	// replace model with modelInvTrans once I get it working
 	vNormalWorld /= vNormalWorld.w;
 	
+	// This section is done in shader2.frag
 	/*vec3 L, R;
 	vec3 N = vec3(vNormalWorld);
 	vec3 E = normalize(vec3(vPositionWorld) - vec3(view[3][0], view[3][1], view[3][2]));
