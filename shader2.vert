@@ -13,40 +13,11 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 modelInvTrans;
 
-struct lightStruct
-{
-	vec3 position;
-	vec3 color;
-};
-
-#define NUM_LIGHTS 2
-
-uniform lightStruct lights[NUM_LIGHTS];
-
-uniform vec3 ka;
-uniform vec3 kd;
-uniform vec3 ks;
-uniform float s;
-
-varying vec3 color;
-
 void main()
 {
-	gl_Position = projection * view * model * vec4(vPositionModel, 1.0);
+	// Convert to world coords
 	vPositionWorld = model * vec4(vPositionModel, 1.0);
-	vPositionWorld /= vPositionWorld.w;
 	vNormalWorld = model * vec4(vNormalModel, 1.0);	// replace model with modelInvTrans once I get it working
-	vNormalWorld /= vNormalWorld.w;
-	
-	// This section is done in shader2.frag
-	/*vec3 L, R;
-	vec3 N = vec3(vNormalWorld);
-	vec3 E = normalize(vec3(vPositionWorld) - vec3(view[3][0], view[3][1], view[3][2]));
-	color = ka;
-	
-	for (int i = 0; i < NUM_LIGHTS; i++) {
-		L = normalize(lights[i].position - vec3(vPositionWorld));
-		R = 2 * N * dot(L, N) - L;
-		color += lights[i].color * (kd * max(0, dot(L, N)) + ks * pow(max(0, dot(R, E)), s));
-	}*/
+
+	gl_Position = projection * view * model * vec4(vPositionModel, 1.0);
 }

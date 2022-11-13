@@ -40,6 +40,10 @@ int selectMat = 0;
 struct lightStruct {
 	glm::vec3 position;
 	glm::vec3 color;
+	bool spotlight = 0;	// Determines whether light is a spotlight
+	glm::vec3 A;	// Direction vector
+	float theta = 20;	// Angle bw A and cone edge
+	float alpha = 0.5;
 } lights[NUM_LIGHTS];
 bool selectLight = 0;
 
@@ -68,8 +72,16 @@ void Display()
 	program[selectProg].SendUniformData(materials[selectMat].s, "s");
 	program[selectProg].SendUniformData(lights[0].position, "lights[0].position");
 	program[selectProg].SendUniformData(lights[0].color, "lights[0].color");
+	program[selectProg].SendUniformData(lights[0].spotlight, "lights[0].spotlight");
+	program[selectProg].SendUniformData(lights[0].A, "lights[0].A");
+	program[selectProg].SendUniformData(lights[0].theta, "lights[0].theta");
+	program[selectProg].SendUniformData(lights[0].alpha, "lights[0].alpha");
 	program[selectProg].SendUniformData(lights[1].position, "lights[1].position");
 	program[selectProg].SendUniformData(lights[1].color, "lights[1].color");
+	program[selectProg].SendUniformData(lights[1].spotlight, "lights[1].spotlight");
+	program[selectProg].SendUniformData(lights[1].A, "lights[1].A");
+	program[selectProg].SendUniformData(lights[1].theta, "lights[1].theta");
+	program[selectProg].SendUniformData(lights[1].alpha, "lights[1].alpha");
 
 	glDrawArrays(GL_TRIANGLES, 0, posBuff.size() / 3);
 	program[selectProg].Unbind();
@@ -89,47 +101,66 @@ void CharacterCallback(GLFWwindow* lWindow, unsigned int key)
 	case 'm':
 		selectMat++;
 		if (selectMat > NUM_MATERIALS - 1) { selectMat = 0; }
+		std::cout << "Material " << selectMat << std::endl;
 		break;
 	case 'M':
 		selectMat--;
 		if (selectMat < 0) { selectMat = NUM_MATERIALS - 1; }
+		std::cout << "Material " << selectMat << std::endl;
 		break;
 	
 	// Change light position
 	case 'l':
 		selectLight = !selectLight;
+		std::cout << "Light " << selectLight << std::endl;
 		break;
 	case 'L':
 		selectLight = !selectLight;
+		std::cout << "Light " << selectLight << std::endl;
 		break;
 	case 'x':
 		lights[selectLight].position.x++;
+		std::cout << "Light " << selectLight << " position: (" << lights[selectLight].position.x << ", " << lights[selectLight].position.y << ", " << lights[selectLight].position.z << ")\n";
 		break;
 	case 'X':
 		lights[selectLight].position.x--;
+		std::cout << "Light " << selectLight << " position: (" << lights[selectLight].position.x << ", " << lights[selectLight].position.y << ", " << lights[selectLight].position.z << ")\n";
 		break;
 	case 'y':
 		lights[selectLight].position.y++;
+		std::cout << "Light " << selectLight << " position: (" << lights[selectLight].position.x << ", " << lights[selectLight].position.y << ", " << lights[selectLight].position.z << ")\n";
 		break;
 	case 'Y':
 		lights[selectLight].position.y--;
+		std::cout << "Light " << selectLight << " position: (" << lights[selectLight].position.x << ", " << lights[selectLight].position.y << ", " << lights[selectLight].position.z << ")\n";
 		break;
 	case 'z':
 		lights[selectLight].position.z++;
+		std::cout << "Light " << selectLight << " position: (" << lights[selectLight].position.x << ", " << lights[selectLight].position.y << ", " << lights[selectLight].position.z << ")\n";
 		break;
 	case 'Z':
 		lights[selectLight].position.z--;
+		std::cout << "Light " << selectLight << " position: (" << lights[selectLight].position.x << ", " << lights[selectLight].position.y << ", " << lights[selectLight].position.z << ")\n";
+		break;
+
+	// Enable spotlight
+	case 's':
+		lights[selectLight].spotlight = !lights[selectLight].spotlight;
+		std::cout << "Spotlight enable " << lights[selectLight].spotlight << std::endl;
 		break;
 
 	// Select between Gouraud, Phong, and Silhouette shading
 	case '1':
 		selectProg = 0;
+		std::cout << "Shader 1: Gouraud\n";
 		break;
 	case '2':
 		selectProg = 1;
+		std::cout << "Shader 2: Phong\n";
 		break;
 	case '3':
 		selectProg = 2;
+		std::cout << "Shader 3: Silhouette\n";
 		break;
 
 	default:
@@ -209,8 +240,10 @@ void Init()
 
 	lights[0].position = glm::vec3{ 0.0, 0.0, 3.0 };
 	lights[0].color = glm::vec3{ 0.5, 0.5, 0.5 };
+	lights[0].A = -lights[0].position;
 	lights[1].position = glm::vec3{ 0.0, 3.0, 0.0 };
 	lights[1].color = glm::vec3{ 0.2, 0.2, 0.2 };
+	lights[1].A = -lights[1].position;
 	
 	glfwInit();
 	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Assignment4 - Ethan Martinez", NULL, NULL);

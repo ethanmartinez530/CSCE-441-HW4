@@ -1,6 +1,5 @@
 #version 120
 
-varying vec3 color;
 varying vec4 vPositionWorld;
 varying vec4 vNormalWorld; 
 
@@ -8,6 +7,7 @@ struct lightStruct
 {
 	vec3 position;
 	vec3 color;
+	bool spotlight;
 };
 
 #define NUM_LIGHTS 2
@@ -36,7 +36,3 @@ void main()
 	
 	gl_FragColor = vec4(I, 1.0f);
 }
-
-// Uniform: ka, kd, ks, s, view
-// Attributes: vPositionModel, vNormalModel
-// L, N, R, E depend on attributes
