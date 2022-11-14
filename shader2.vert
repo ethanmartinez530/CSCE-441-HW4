@@ -17,7 +17,7 @@ void main()
 {
 	// Convert to world coords
 	vPositionWorld = model * vec4(vPositionModel, 1.0);
-	vNormalWorld = model * vec4(vNormalModel, 1.0);	// replace model with modelInvTrans once I get it working
+	vNormalWorld = modelInvTrans * vec4(vNormalModel, 1.0);
 
 	gl_Position = projection * view * model * vec4(vPositionModel, 1.0);
 }

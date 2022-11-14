@@ -8,6 +8,9 @@ struct lightStruct
 	vec3 position;
 	vec3 color;
 	bool spotlight;
+	vec3 A;
+	float theta;
+	float alpha;
 };
 
 #define NUM_LIGHTS 2
@@ -31,7 +34,12 @@ void main()
 	for (int i = 0; i < NUM_LIGHTS; i++) {
 		L = normalize(lights[i].position - vec3(vPositionWorld));
 		R = 2 * N * dot(L, N) - L;
-		I += lights[i].color * (kd * max(0, dot(L, N)) + ks * pow(max(0, dot(R, E)), s));
+		float spotCoef = 1;
+		if (lights[i].spotlight) {
+			if (dot(-L, lights[i].A) < cos(degrees(lights[i].theta))) {spotCoef = 0;}
+			else {spotCoef = pow(dot(-L, lights[i].A), lights[i].alpha);}
+		}
+		I += lights[i].color * spotCoef * (kd * max(0, dot(L, N)) + ks * pow(max(0, dot(R, E)), s));
 	}
 	
 	gl_FragColor = vec4(I, 1.0f);

@@ -37,8 +37,9 @@ void main()
 {
 	// Convert to world coords
 	vPositionWorld = model * vec4(vPositionModel, 1.0);
+	vPositionWorld /= vPositionWorld.w;
 	vNormalWorld = modelInvTrans * vec4(vNormalModel, 1.0);
-	//vNormalWorld = vec4(normalize(vec3(model * vec4(vPositionModel + vNormalModel, 1.0))), 1.0) - vPositionWorld;
+	//vNormalWorld /= vNormalWorld.w;
 	
 	// Find N and E
 	vec3 L, R;
